@@ -1,46 +1,56 @@
 import { useState } from 'react';
 
-const Statistics = ({ good, neutral, bad }) => {
-  if ((good + neutral + bad) === 0) {
+const StatisticLine = ({ text, value }) => {
+  return (
+    <tr>
+      <td>{text}</td>
+      <td>{value}</td>
+    </tr>
+  );
+}
+
+const Statistics = ({ good, neutral, bad, total }) => {
+  if (total == 0) {
     return (
-      <>
-        <h1>statistics</h1>
-        <p>No feedback given</p>
-      </>
+      <p>No feedback given</p>
     );
   }
   return (
-    <>
-      <h1>statistics</h1>
-      <p>
-        good {good}
-        <br />
-        neutral {neutral}
-        <br />
-        bad {bad}
-        <br />
-        all {good + neutral + bad}
-        <br />
-        average {(good - bad) / (good + neutral + bad)}
-        <br />
-        positive {good * 100.0 / (good + neutral + bad)} %
-      </p>
-    </>
+    <table>
+      <tbody>
+        <StatisticLine text="good" value={good} />
+        <StatisticLine text="neutral" value={neutral} />
+        <StatisticLine text="bad" value={bad} />
+        <StatisticLine text="average" value={(good - bad) / total} />
+        <StatisticLine text="positive" value={good * 100.0 / total} />
+      </tbody>
+    </table>
   );
+}
+
+const Button = ({ text, state, setter, total, setTotal }) => {
+  const handleClick = () => {
+    setter(state + 1);
+    setTotal(total +  1)
+  }
+  
+  return <button onClick={handleClick}>{text}</button>
 }
 
 const App = () => {
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
+  const [total, setTotal] = useState(0);
 
   return (
     <div>
       <h1>give feedback</h1>
-      <button onClick={() => setGood(good + 1)}>good</button>
-      <button onClick={() => setNeutral(neutral + 1)}>neutral</button>
-      <button onClick={() => setBad(bad + 1)}>bad</button>
-      <Statistics good={good} neutral={neutral} bad={bad} />
+      <Button text="good" state={good} setter={setGood} total={total} setTotal={setTotal} />
+      <Button text="neutral" state={neutral} setter={setNeutral} total={total} setTotal={setTotal} />
+      <Button text="bad" state={bad} setter={setBad} total={total} setTotal={setTotal} />
+      <h1>statistics</h1>
+      <Statistics good={good} neutral={neutral} bad={bad} total={total} />
     </div>
   );
 }
