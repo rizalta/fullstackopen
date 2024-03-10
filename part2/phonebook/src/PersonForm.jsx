@@ -1,7 +1,8 @@
 import personsService from './services/persons.js';
 
-const PersonForm = ({ newName, newNumber, setNewName, setNewNumber, persons, setPersons }) => {
-  
+const PersonForm = (props) => {
+  const { newName, newNumber, setNewName, setNewNumber, persons, setPersons, setNotification } = props;
+
   const handleNameChange = (e) => {
     setNewName(e.target.value);
   }
@@ -22,7 +23,18 @@ const PersonForm = ({ newName, newNumber, setNewName, setNewNumber, persons, set
       if (update) {
         personsService
           .update(found.id, newPerson)
-          .then(data => setPersons(persons.map(person => person.id != data.id ? person : data)));
+          .then(data => {
+            setPersons(persons.map(person => person.id != data.id ? person : data));
+            setNewName("");
+            setNewNumber("");
+            setNotification({
+              type: "success",
+              message: `Number changed for ${data.name}`
+            });
+            setTimeout(() => {
+              setNotification({});
+            }, 5000);
+          })
       }
     } else {
       personsService
@@ -31,6 +43,13 @@ const PersonForm = ({ newName, newNumber, setNewName, setNewNumber, persons, set
           setPersons([...persons, data]);
           setNewName("");
           setNewNumber("");
+          setNotification({
+            type: "success",
+            message: `Added ${data.name}`
+          })
+          setTimeout(() => {
+            setNotification({});
+          }, 5000);
         })
 
     }
