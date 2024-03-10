@@ -1,3 +1,5 @@
+import personsService from './services/persons.js';
+
 const PersonForm = ({ newName, newNumber, setNewName, setNewNumber, persons, setPersons }) => {
   
   const handleNameChange = (e) => {
@@ -10,17 +12,27 @@ const PersonForm = ({ newName, newNumber, setNewName, setNewNumber, persons, set
   
   const addPerson = (e) => {
     e.preventDefault();
-    if (persons.some(person => person.name == newName)) {
-      alert(`${newName} is already added to phonebook`)
-    } else {
-      const newPerson = {
-        name: newName,
-        number: newNumber,
-        id: persons.length + 1,
+    const newPerson = {
+      name: newName,
+      number: newNumber,
+    }
+    const found = persons.find(person => person.name === newName)
+    if (found) {
+      const update = confirm(`${newName} is already added to phonebook, replace the old number with a new one?`);
+      if (update) {
+        personsService
+          .update(found.id, newPerson)
+          .then(data => setPersons(persons.map(person => person.id != data.id ? person : data)));
       }
-      setPersons([...persons, newPerson]);
-      setNewName("");
-      setNewNumber("");
+    } else {
+      personsService
+        .create(newPerson)
+        .then(data => {
+          setPersons([...persons, data]);
+          setNewName("");
+          setNewNumber("");
+        })
+
     }
   }    
 
