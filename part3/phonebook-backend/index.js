@@ -1,4 +1,5 @@
 import express from "express";
+import morgan from "morgan";
 
 let persons = [
   { 
@@ -26,6 +27,11 @@ let persons = [
 const app = express();
 
 app.use(express.json());
+
+morgan.token('req-body', function (req, res) {
+  return JSON.stringify(req.body);
+});
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :req-body'));
 
 app.get("/api/persons", (req, res) => {
   res.json(persons);
@@ -59,8 +65,11 @@ const generateId = () => Math.floor(Math.random() * 1000000);
 app.post("/api/persons", (req, res) => {
   const { name, number } = req.body;
 
-  if (!name || !number) {
-    return res.status(400).json({ error: "Name or number missing" });
+  if (!name) {
+    return res.status(400).json({ error: "Name missing" });
+  }
+  if (!number) {
+    return res.status(400).json({ error: "Number missing" });
   }
 
   const found = persons.find(p => p.name === name);
