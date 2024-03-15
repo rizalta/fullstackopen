@@ -31,7 +31,11 @@ app.use(express.json());
 morgan.token('req-body', function (req, res) {
   return JSON.stringify(req.body);
 });
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :req-body'));
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :req-body', {
+  skip: function (req, res) {
+    return req.body == null || JSON.stringify(req.body) === '{}';
+  }
+}));
 
 app.get("/api/persons", (req, res) => {
   res.json(persons);
@@ -87,7 +91,7 @@ app.post("/api/persons", (req, res) => {
   res.status(201).json({ person });
 });
 
-const PORT = 3001;
+const PORT = process.env || 3001;
 
 app.listen(PORT, () => {
   console.log(`Server running in ${PORT}`);
