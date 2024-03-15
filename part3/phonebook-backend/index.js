@@ -62,9 +62,7 @@ app.get("/api/persons/:id", (req, res) => {
 app.delete("/api/persons/:id", (req, res) => {
   const id = Number(req.params.id);
   const person =  persons.find(p => p.id = id);
-  console.log(person);
-  persons = persons.filter(p => p !== person);
-  console.log(persons)
+  persons = persons.filter(p => p.id !== person.id);
   res.status(200).json(person);
 });
 
