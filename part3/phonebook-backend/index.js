@@ -62,8 +62,10 @@ app.get("/api/persons/:id", (req, res) => {
 app.delete("/api/persons/:id", (req, res) => {
   const id = Number(req.params.id);
   const person =  persons.find(p => p.id = id);
-  persons = persons.filter(p => p !== p);
-  res.status(204).json(person);
+  console.log(person);
+  persons = persons.filter(p => p !== person);
+  console.log(persons)
+  res.status(200).json(person);
 });
 
 const generateId = () => Math.floor(Math.random() * 1000000);
