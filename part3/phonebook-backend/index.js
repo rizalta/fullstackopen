@@ -1,5 +1,6 @@
 import express from "express";
 import morgan from "morgan";
+import cors from 'cors'
 
 let persons = [
   { 
@@ -25,6 +26,10 @@ let persons = [
 ]
 
 const app = express();
+
+app.use(cors());
+
+app.use(express.static('dist'));
 
 app.use(express.json());
 
@@ -84,7 +89,7 @@ app.post("/api/persons", (req, res) => {
     id: generateId(),
   }
   persons = persons.concat(person);
-  res.status(201).json({ person });
+  res.status(201).json(person);
 });
 
 const PORT = process.env.PORT || 3001;
