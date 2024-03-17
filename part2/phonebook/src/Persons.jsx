@@ -10,7 +10,7 @@ const Persons = ({ persons, search, setPersons, setNotification }) => {
     if (deleteConfirmation) {
       personsServices
         .deletePerson(person.id)
-        .then(data => setPersons(persons.filter(p => p.id !== data.id)))
+        .then(() => setPersons(persons.filter(p => p.id !== person.id)))
         .catch(() => {
           setNotification({
             type: "error",
