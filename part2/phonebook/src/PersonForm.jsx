@@ -35,6 +35,15 @@ const PersonForm = (props) => {
               setNotification({});
             }, 5000);
           })
+          .catch(err => {
+            setNotification({
+              type: "error",
+              message: `Person validation failed: ${err.response.data.error}`,
+            });
+            setTimeout(() => {
+              setNotification({});
+            }, 5000);
+          });
       }
     } else {
       personsService
@@ -46,12 +55,20 @@ const PersonForm = (props) => {
           setNotification({
             type: "success",
             message: `Added ${data.name}`
-          })
+          });
           setTimeout(() => {
             setNotification({});
           }, 5000);
         })
-
+        .catch(err => {
+          setNotification({
+            type: "error",
+            message: `Person validation failed: ${err.response.data.error}`,
+          });
+          setTimeout(() => {
+            setNotification({});
+          }, 5000);
+        });
     }
   }    
 
