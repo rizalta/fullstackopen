@@ -99,7 +99,7 @@ const errorHandler = (error, req, res, next) => {
   } else if (error.name === "ValidationError") {
     let message = "";
     for (const field in error.errors) {
-      message += error.errors[field].message
+      message += `${field}: ${error.errors[field].message}`
     }
     return res.status(400).json({ error: message });
   }
